@@ -1,0 +1,5 @@
+
+
+const CHANGE_USER_STATE = 'CHANGE_USER_STATE'
+
+export { CHANGE_USER_STATE }
