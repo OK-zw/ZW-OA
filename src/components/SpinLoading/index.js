@@ -1,17 +1,23 @@
-
 import React, { Component } from 'react'
-import { Spin } from 'antd';
-class SpinLoaidng extends Component {
+import { Spin, Icon, Alert } from 'antd'
 
-    render () {
+const antIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
+
+class SpinLogin extends Component{
+
+
+    render(){
+
         let { loading } = this.props
+
         return (
-            <div style = {{ display: loading ? 'block' : 'none' }} className = "spin-loading">
-                <Spin tip="请稍等..." spinning={loading}></Spin>
+            <div className = 'spin-login' style = {{display: loading? 'block':'none'}} >
+
+                <Spin tip = '加载中...' indicator={antIcon}   spinning={ loading } />
+
             </div>
         )
     }
-
 }
 
-export default SpinLoaidng
+export default SpinLogin
