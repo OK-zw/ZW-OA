@@ -33,7 +33,7 @@ class App extends Component {
     let { commons, history } = this.props
     if(props.location.pathname !== '/login'){ // 如果没在登入页面
       if(!commons.user_state){  // 如果登入状态没有
-          history.replace('/login')
+          // history.replace('/login')
       }
     }
   }
