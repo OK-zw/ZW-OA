@@ -24,8 +24,8 @@ class App extends Component {
     // console.log(this.props.commons.user_state)
 
       this.checkLogin(this.props)
-      this.bus.on('change-loading', () => {
-        this.setState({isLogin: !this.state.isLogin})
+      this.bus.on('change-loading', (bool) => {
+        this.setState({isLogin: bool})
       })
   }
 

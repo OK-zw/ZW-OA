@@ -5,7 +5,7 @@ import bus from '../bus'
 const http = { // 二次封装axios
     ajax (options) {
         return new Promise((resolve, rejected) => {
-            bus.emit('change-loading') // 触发loading事件，将loadingstate改为false
+            bus.emit('change-loading', true) // 触发loading事件，将loadingstate改为false
             axios({
                 url: options.url,
                 params: options.params || {},
