@@ -2,6 +2,7 @@
     "code": 200,
     "data": {
         "username": "迪迦",
-        "level": 8
+        "level": 8,
+        "Permissions": ["Permissions_pass"]
     }
 }

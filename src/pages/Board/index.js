@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react'
 import './index.scss'
-
+import connect from '../../modules/connect'
 
 import { Table, Button, Divider, Select, Modal  } from 'antd';
 import Search from 'antd/lib/transfer/search';
@@ -42,7 +42,7 @@ class Board extends React.Component {
           <span>
           <a href="javascript:;"> 修改 {record.name}</a>
           <Divider type="vertical" />
-          <a href="javascript:;"> 删除 </a>
+          <a onClick = { this.deleteBoard.bind(this, record.id) } href="javascript:;"> 删除 </a>
           <Divider type="vertical" />
           <a onClick = {this.Look.bind(this, record.id)} href="javascript:;"> 查看 </a>            
         </span>
@@ -98,7 +98,7 @@ class Board extends React.Component {
   }
 
 
-  searchChange (value) {
+  searchChange (value) { // 根据内容id，请求数据后，重新渲染数据
     this.getData(value)
   }
 
@@ -115,6 +115,26 @@ class Board extends React.Component {
     }
     this.taggleLook()
   }
+
+
+  checkPermissions (type) { // 检查权限
+    let { Permissions } = this.props.commons.user_state
+    
+    return Permissions.some(item => item === type)
+  }
+
+
+  deleteBoard (id) { // 删除board
+    let can = this.checkPermissions('Permissions_pass') // 将后端给的权限传入函数进行判断
+
+    if(!can) { // 没有权限，可以跳转到没有权限的页面，这里使用alert提示
+      alert('没有权限'); return false
+    }
+
+    // 在这里调用后端的数据接口，去更改数据库的数据，然后记得把前端的的数据（模型）同步，这里直接就同步了！
+    this.setState({ data: this.state.data.filter(item => item.id !== id) }) // 重新渲染页面的数据，返回没有点击的board的id，也就将点击的board删除了
+  }
+
 
 
   render() {
@@ -175,4 +195,4 @@ class Board extends React.Component {
 
 
 
-export default Board
+export default connect(Board)
