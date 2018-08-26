@@ -1,6 +1,7 @@
 
 import React, { Component } from 'react'
 import './index.scss'
+import LineCharts from './LineCharts'
 
 
 class Attend extends Component {
@@ -13,8 +14,7 @@ class Attend extends Component {
     render () {
         return (
             <div className = "app-attend">
-                Hello ,this is Attend!
-         
+                <LineCharts/>
             </div>
         )
     }

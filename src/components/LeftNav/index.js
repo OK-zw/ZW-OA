@@ -59,7 +59,7 @@ class LeftNav extends Component {
  
 
     getOpenKey () { 
-        let {pathname} = this.props.location
+        let { pathname } = this.props.location
         let { menu_state } = this.props
         if (!menu_state) return ''
         for (let i = 0; i < menu_state.length; i++) {

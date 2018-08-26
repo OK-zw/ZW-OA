@@ -3,10 +3,11 @@ import React, { Component } from 'react'
 import './index.scss'
 import connect from '../../modules/connect'
 
-import { Table, Button, Divider, Select, Modal  } from 'antd';
+import { Table, Button, Divider, Select, Modal, Input  } from 'antd';
 import Search from 'antd/lib/transfer/search';
 
 const Option = Select.Option; // 选择器
+const { TextArea } = Input
 
 
 class Board extends React.Component {
@@ -16,6 +17,8 @@ class Board extends React.Component {
     this.searchChange = this.searchChange.bind(this)
     this.Look = this.Look.bind(this)
     this.taggleLook = this.taggleLook.bind(this)
+    this.AddBoard = this.AddBoard.bind(this)
+    this.submitCreateBoard = this.submitCreateBoard.bind(this)
   }
   state = {
     selectedRowKeys: [], // Check here to configure the default column
@@ -111,6 +114,7 @@ class Board extends React.Component {
       const item = this.state.data[i]
       if( item.id === id ){
         this.setState({ LookContent: item })
+    
       }
     }
     this.taggleLook()
@@ -131,8 +135,32 @@ class Board extends React.Component {
       alert('没有权限'); return false
     }
 
-    // 在这里调用后端的数据接口，去更改数据库的数据，然后记得把前端的的数据（模型）同步，这里直接就同步了！
+    // 在这里调用后端的数据接口，去更改数据库的数据，（后端返回新的数据之后）然后记得把前端的的数据（模型）同步，这里直接就同步了！
     this.setState({ data: this.state.data.filter(item => item.id !== id) }) // 重新渲染页面的数据，返回没有点击的board的id，也就将点击的board删除了
+  }
+
+  AddBoard () {  // 增加board
+    let can = this.checkPermissions('add_board')
+    if(!can){
+      alert('没有权限'); return false;
+    }
+
+    this.setState({ LookContent: {} })
+    this.taggleLook()
+  }
+
+
+  submitCreateBoard (title, content) { // 提交新增信息
+    //与后端进行数据交互
+    alert(title)
+    alert(content)
+  
+    let id = this.state.data.length +1 // 假id
+
+    let board = { title, content, type: '生活园地', type_id: 1, id: id, key: id }  // 后端返回的数据
+    this.state.data.push(board)
+
+    this.taggleLook() // 弹窗开关
   }
 
 
@@ -165,6 +193,13 @@ class Board extends React.Component {
 
 
           <Button
+            type="primary"  
+            onClick={this.AddBoard}
+          >
+            AddBoard
+          </Button>
+
+          <Button
             type="primary"
             onClick={this.start}
             disabled={!hasSelected}
@@ -172,26 +207,91 @@ class Board extends React.Component {
           >
             Reload
           </Button>
+
           <span style={{ marginLeft: 8 }}>
             {hasSelected ? `Selected ${selectedRowKeys.length} items` : ''}
           </span>
         </div>
         <Table rowSelection={rowSelection} columns={columns} dataSource={data} />
 
-
-        <Modal
-          title= { LookContent.title }
+        <OAModal  // 弹窗查看内容组件
+          title= { LookContent }
           visible={this.state.modal_visible}
-          onOk={this.taggleLook}
+          onOk={ LookContent.title ? this.taggleLook : this.submitCreateBoard}
           onCancel={this.taggleLook}
         >
           <p> { LookContent.content } </p>
-        </Modal>
+        </OAModal>
+        
       </div>
     );
   }
 }
 
+
+
+class ModalContent extends Component {
+  constructor(props){
+    super(props)
+
+  }
+}
+
+const CreateForm = ({get_content, get_title}) => {
+  return (
+    <div>
+      <Input onChange = {get_title} style={{color:'#000'}} placeholder = '请输入标题' />
+      <TextArea onChange = {get_content} placeholder = '请输入内容' autosize = {{minRows: 3}} />
+    </div>
+  )
+}
+
+
+class OAModal extends Component{
+  constructor(props){
+    super(props)
+
+  
+    this.get_title = this.get_title.bind(this)
+    this.get_content = this.get_content.bind(this)
+    
+    this.state = {
+      board: { title: '', content: '' }
+    }
+
+  }
+  
+
+
+  get_title = (e) => { 
+    this.state.board.title = e.target.value
+    this.setState({ board: this.state.board }) 
+  }
+  get_content = (e) => { 
+    this.state.board.content = e.target.value 
+    this.setState({ board: this.state.board }) 
+  }
+
+
+  render () {
+    let title = this.props.title.title || '新增内容'
+   
+    let _content = this.props.title.content || <CreateForm get_title = { this.get_title } get_content = { this.get_content }/>
+
+    return (
+      <Modal
+        title= { title }
+        visible={this.props.visible}
+        onOk={this.props.onOk.bind(null, this.state.board.title, this.state.board.content)}
+        onCancel={this.props.onCancel}
+      >
+        <div> { _content } </div>
+      </Modal>
+    )
+  }
+ 
+  
+}
 
 
 

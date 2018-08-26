@@ -3,6 +3,7 @@
     "data": {
         "username": "迪迦",
         "level": 8,
-        "Permissions": ["Permissions_pass"]
+        "Permissions": ["Permissions_pass","add_board"],
+        "token": "fsfdsfsdfssssfeppppppppp"
     }
 }
